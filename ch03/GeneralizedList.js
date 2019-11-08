@@ -5,9 +5,9 @@ function Node(data, next){
 }
 
 function LinkedList(){
-    this.header = new Node();
-    this.tail = new Node();
-    this.currentSize = 0;
+    this.header = new Node(); // 头节点
+    this.tail = new Node(); // 尾节点
+    this.currentSize = 0;  // 当前链表的大小
 }
 
 // 表的长度
@@ -27,15 +27,18 @@ LinkedList.prototype.makeEmpty = function(){
 
 // 查找指定位置上的元素
 LinkedList.prototype.findKth = function(index){
+    // 确保链表非空
     if(this.isEmpty()){
         console.log("链式表为空");
         return false;
     }
-    if(index > this.currentSize){
+    // 确保查找的位置在[1, currentSize]内
+    if(index < 1 || index > this.currentSize){
         console.log("不存在指定的位置");
         return false;
     }
-    var currentNode = this.header.next; // 第一个节点
+    // 从第一个节点开始查找
+    var currentNode = this.header.next; 
     var counter = 1;
     for(; counter < index; counter++){
         currentNode = currentNode.next;
@@ -45,13 +48,16 @@ LinkedList.prototype.findKth = function(index){
 
 // 查找某个元素
 LinkedList.prototype.find = function(value){
+    // 确保链表非空
     if(this.isEmpty()){
         console.log("链式表为空");
         return false;
     }
-    var currentNode = this.header.next; // 第一个节点
+
+    // 从第一个节点开始查找
+    var currentNode = this.header.next; 
     var count = 1;
-    for(; currentNode.next != tail.tail; currentNode = currentNode.next){
+    for(; currentNode != tail.tail; currentNode = currentNode.next){
         if(currentNode.data == value){
             return count;
         }
@@ -72,9 +78,11 @@ LinkedList.prototype.insert = function(value, index){
     }
     var tempNode = new Node();
     tempNode.data = value;
-    var currentNode = this.header.next;
-    var count = 1;
-    for(; count < index; count++){
+
+    // 定位到指定位置前一个位置
+    var currentNode = this.header;
+    var count = 0;
+    for(; count < index - 1; count++){
         currentNode = currentNode.next;
     }
     tempNode.next = currentNode.next;
@@ -87,6 +95,7 @@ LinkedList.prototype.insert = function(value, index){
 LinkedList.prototype.insertByStart = function(value){
     var tempNode = new Node();
     tempNode.data = value;
+    // 将新节点插入到头节点后
     tempNode.next = this.header.next;
     this.header.next = tempNode;
     this.currentSize++;
@@ -95,7 +104,19 @@ LinkedList.prototype.insertByStart = function(value){
 
 // 在链表末尾插入元素
 LinkedList.prototype.insertByEnd = function(value){
-    return insert(value, currentSize);
+    var currentNode = this.header;
+    // 定位到尾节点的前一个节点
+    while(currentNode.next != this.tail){
+        currentNode = currentNode.next;
+    }
+    // 建立一个新节点
+    var tempNode = new Node();
+    tempNode.data = value;
+    // 将新节点插入到尾节点前
+    tempNode.next = currentNode.next;
+    currentNode.next = tempNode;
+    this.currentSize++;
+    return true;
 };
 
 // 在指定位置上删除元素
@@ -104,6 +125,8 @@ LinkedList.prototype.delete = function(index){
         console.log("删除位置不合适");
         return false;
     }
+
+    // 定位到指定位置前一个位置
     var currentNode = this.header;
     var count = 0;
     while(count < index - 1){
@@ -122,7 +145,9 @@ LinkedList.prototype.deleteElement = function(value){
         console.log("链表为空");
         return false;
     }
-    var currentNode = this.header.next;
+
+    // 定位到指定元素前一个元素
+    var currentNode = this.header;
     while(currentNode.next != this.tail){
         if(currentNode.next.data == value){
             currentNode.next = currentNode.next.next;
@@ -135,6 +160,7 @@ LinkedList.prototype.deleteElement = function(value){
 // 显示链表的内容
 LinkedList.prototype.showMessage = function(){
     var result = [];
+    // 遍历链表中的元素
     var currentNode = this.header.next;
     while(currentNode != this.tail){
         result.push(currentNode.data);
@@ -177,9 +203,7 @@ GeneralizedList.prototype.makeEmpty = function(){
 
 // 在指定位置上插入单个元素
 GeneralizedList.prototype.insert = function(value, index){
-    if(this.isEmpty() && index == 1){
-        this.insertByStart(value);
-    }
+    
     // index是否合法
     if(index < 1 || index > this.currentSize){
         console.log("插入位置不合法");
@@ -187,13 +211,10 @@ GeneralizedList.prototype.insert = function(value, index){
     }
     var currentNode = this.header;
     var count = 0;
-    // 找到插入位置的前一个位置
-    while(count < index){
+    // 定位到插入位置的前一个位置
+    while(count < index - 1){
         currentNode = currentNode.next;
         count++;
-        if(count == index - 1){
-            break;
-        }
     }
     // 新建一个节点
     var tempNode = new GNode(value, null, 0, null);
@@ -215,13 +236,10 @@ GeneralizedList.prototype.insertAList = function(list, index){
     }
     var currentNode = this.header;
     var count = 0;
-    // 找到插入位置的前一个位置
-    while(count < index){
+    // 定位到插入位置的前一个位置
+    while(count < index - 1){
         currentNode = currentNode.next;
         count++;
-        if(count == index - 1){
-            break;
-        }
     }
     // 新建一个节点
     var tempNode = new GNode(null, null, 1, list);
@@ -234,6 +252,7 @@ GeneralizedList.prototype.insertAList = function(list, index){
 // 在链表的开始位置插入一个元素
 GeneralizedList.prototype.insertByStart = function(value){
     var tempNode = new GNode(value, null, 0, null);
+    // 将新节点插入到头节点后
     tempNode.next = this.header.next;
     this.header.next = tempNode;
     this.currentSize++;
@@ -243,6 +262,7 @@ GeneralizedList.prototype.insertByStart = function(value){
 // 在广义表开始位置插入一个链表
 GeneralizedList.prototype.insertAListByStart = function(list){
     var tempNode = new GNode(null, null, 1, list);
+    // 将新节点插入到头节点后
     tempNode.next = this.header.next;
     this.header.next = tempNode;
     this.currentSize++;
