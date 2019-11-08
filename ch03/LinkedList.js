@@ -70,7 +70,7 @@ LinkedList.prototype.find = function(value){
     }
     var currentNode = this.header.next; // 第一个节点
     var count = 1;
-    for(; currentNode.next != tail.tail; currentNode = currentNode.next){
+    for(; currentNode != tail.tail; currentNode = currentNode.next){
         if(currentNode.data == value){
             return count;
         }
@@ -88,11 +88,15 @@ LinkedList.prototype.insert = function(value, index){
     }
     var tempNode = new Node();
     tempNode.data = value;
-    var currentNode = this.header.next;
-    var count = 1;
-    for(; count < index; count++){
+
+    // 定位到指定位置前一个节点
+    var currentNode = this.header;
+    var count = 0;
+    for(; count < index - 1; count++){
         currentNode = currentNode.next;
     }
+
+    // 更改指针
     tempNode.next = currentNode.next;
     currentNode.next = tempNode;
     this.currentSize++;
@@ -103,6 +107,7 @@ LinkedList.prototype.insert = function(value, index){
 LinkedList.prototype.insertByStart = function(value){
     var tempNode = new Node();
     tempNode.setData(value);
+    // 从头节点后插入新节点
     tempNode.next = this.header.next;
     this.header.next = tempNode;
     this.currentSize++;
@@ -111,7 +116,19 @@ LinkedList.prototype.insertByStart = function(value){
 
 // 在链表末尾插入元素
 LinkedList.prototype.insertByEnd = function(value){
-    return insert(value, currentSize);
+    var tempNode = new Node();
+    tempNode.data = value;
+
+    // 定位到尾节点前一个节点
+    var currentNode = this.header;
+    while(currentNode.next != this.tail){
+        currentNode = currentNode.next;
+    }
+    // 更改指针
+    tempNode.next = currentNode.next;
+    currentNode.next = tempNode;
+    this.currentSize++;
+    return true;
 };
 
 // 在指定位置上删除元素
@@ -120,12 +137,16 @@ LinkedList.prototype.delete = function(index){
         console.log("删除位置不合适");
         return false;
     }
+
+    // 定位到指定位置前一个位置
     var currentNode = this.header;
     var count = 0;
     while(count < index - 1){
         currentNode = currentNode.next;
         count++;
     }
+
+    // 更改指针
     var deleted = currentNode.next;
     currentNode.next = deleted.next;
     this.currentSize--;
@@ -138,12 +159,15 @@ LinkedList.prototype.deleteElement = function(value){
         console.log("链表为空");
         return false;
     }
-    var currentNode = this.header.next;
+
+    // 定位到指定元素前一个元素
+    var currentNode = this.header;
     while(currentNode.next != this.tail){
         if(currentNode.next.data == value){
             currentNode.next = currentNode.next.next;
             this.currentSize--;
         }
+        currentNode = currentNode.next;
     }
     return true;
 };
