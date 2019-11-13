@@ -35,3 +35,20 @@ tree.preorderPrintLeavesNoRecusive(1);
 
 console.log("二叉树的高度: ");
 console.log(tree.getHeight(1));
+
+console.log("构建一棵二叉树：");
+var tree2 = new ArrayBinaryTree();
+tree2.makeEmpty(maxSize);
+var input = [];
+for(var i = 1; i < 20; i++){
+    if(i % 5 == 0){
+        input[i - 1] = 0;
+    }else{
+        input[i - 1] = i;
+    }
+}
+tree2.createInLevel(input);
+console.log("层序遍历：");
+tree2.levelOrderTraversal(1);
+console.log("先序遍历：");
+tree2.preorderTraversal(1);

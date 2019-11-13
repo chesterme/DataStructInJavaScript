@@ -163,7 +163,9 @@ ArrayBinaryTree.prototype.inorderTraveralNoRecusive = function(index){
             }
             // 访问栈顶元素
             start = stack.pop();
-            console.log(this.data[start]);
+            if(this.data[start] != null){
+                console.log(this.data[start]);
+            }
             start = start * 2 + 1;
         }while(start > this.currentSize);
     }
@@ -172,8 +174,10 @@ ArrayBinaryTree.prototype.inorderTraveralNoRecusive = function(index){
 // 先序遍历
 ArrayBinaryTree.prototype.preorderTraversal = function(index){
     if(index >= 1 && index <= this.currentSize){
-        // 先访问当前节点
-        console.log(this.data[index]);
+        if(this.data[index] != null){
+            // 先访问当前节点
+            console.log(this.data[index]);
+        }   
         // 然后访问它的左子树
         this.preorderTraversal(index * 2);
         // 最后访问它的右子树
@@ -190,8 +194,10 @@ ArrayBinaryTree.prototype.preorderTraversalNoRecusive = function(index){
 
     while(start >= 1 && start <= this.currentSize){
         while(start >= 1 && start <= this.currentSize){
-            // 首先访问当前节点
-            console.log(this.data[start]);
+            if(this.data[start] != null){
+                // 首先访问当前节点
+                console.log(this.data[start]);
+            }
             // 将当前节点入栈
             stack.push(start);
             // 深入它的左节点
@@ -217,8 +223,10 @@ ArrayBinaryTree.prototype.postorderTraversal = function(index){
         this.postorderTraversal(index * 2);
         // 然后访问它的右子树
         this.postorderTraversal(index * 2 + 1);
-        // 最后访问该节点
-        console.log(this.data[index]);
+        if(this.data[index] != null){
+            // 最后访问该节点
+            console.log(this.data[index]);
+        }    
     }
 }
 
@@ -249,7 +257,7 @@ ArrayBinaryTree.prototype.postorderTraveralNoRecusive = function(index){
             // 弹出栈顶元素
             start = stack.pop();
             // 如果该节点已经入栈两次，说明从左子树开始向下深入和从右子树开始向下深入都回归到该节点，则可以访问它
-            if(pushCounter[start] == 2){
+            if(pushCounter[start] == 2 && this.data[start] != null){
                 console.log(this.data[start]);
             }
             // 需要从它的右子树开始向下深入
@@ -274,8 +282,10 @@ ArrayBinaryTree.prototype.levelOrderTraversal = function(index){
 
     while(!queue.isEmpty()){
         start = queue.dequeue();
-        // 访问节点元素
-        console.log(this.data[start]);
+        if(this.data[start] != null){
+            // 访问节点元素
+            console.log(this.data[start]);
+        }
         // 将当前节点的左右子节点入队
         if(start * 2 >= 1 && start * 2 <= this.currentSize){
             queue.enqueue(start * 2);
@@ -317,7 +327,7 @@ ArrayBinaryTree.prototype.preorderPrintLeavesNoRecusive = function(index){
             }
             start = stack.pop();
             // 判断它是否是叶子节点
-            if(start * 2 > this.currentSize){
+            if(start * 2 > this.currentSize && this.data[start] != null){
                 console.log(this.data[start]);
             }
             start = start * 2 + 1;
@@ -340,4 +350,50 @@ ArrayBinaryTree.prototype.getHeight = function(index){
     else{
         return 0;
     }
+}
+
+// 使用层次遍历的方式构建一个二叉树
+// input是一个数组，若元素内容为0表示该节点为空节点
+ArrayBinaryTree.prototype.createInLevel = function(input){
+    // 构建一个队列
+    var queue = new LinkedQueue();
+    queue.makeEmpty();
+
+    if(input.length == 0){
+        console.log("输入源不能为空");
+        return false;
+    }
+
+    // 将输入源的第一个元素作为根节点
+    var treeIndex = 1; // 根节点下标
+    var inputIndex = 0; // 输入源下标
+    this.data[treeIndex] = input[inputIndex++];
+    this.currentSize++;
+    queue.enqueue(treeIndex);
+
+    while(!queue.isEmpty() && inputIndex < input.length){
+        treeIndex = queue.dequeue();
+        // 添加当前节点的左儿子节点
+        if(input[inputIndex] == 0){
+            this.data[treeIndex * 2] = null; // 左儿子节点为空
+            inputIndex++;
+        }
+        else{
+            this.data[treeIndex * 2] = input[inputIndex++];
+            queue.enqueue(treeIndex * 2); // 将左儿子添加到队列中
+            this.currentSize++;
+        }
+
+        // 添加当前元素的右儿子
+        if(input[inputIndex] == 0){
+            this.data[treeIndex * 2 + 1] = null; // 右儿子节点为空
+            inputIndex++;
+        }
+        else{
+            this.data[treeIndex * 2 + 1] = input[inputIndex++];
+            queue.enqueue(treeIndex * 2 + 1); 
+            this.currentSize++;
+        }
+    }
+
 }
