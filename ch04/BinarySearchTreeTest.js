@@ -27,6 +27,6 @@ console.log(tree.getHeight(tree.root));
 
 var targetIndex = 3;
 console.log("删除元素：" + input[3]);
-tree.delete(input[3]);
+tree.delete(tree.root, input[3]);
 console.log("二叉树的先序遍历，递归方式：");
 tree.preorderTraversal(tree.root);
